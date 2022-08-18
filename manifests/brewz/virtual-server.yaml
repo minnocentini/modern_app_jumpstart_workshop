@@ -37,11 +37,21 @@ spec:
             pass: spa-dark
       action:
         pass: spa
-    - path: /api
+- path: /api
       policies:
         - name: rate-limit-policy
       action:
         pass: api
+      errorPages:
+        - codes: [404]
+          return:
+            code: 404
+            type: application/json
+            body: |
+              {\"msg\": \"Could not find the product!\"}
+            headers:
+              - name: x-debug-original-status
+                value: ${upstream_status}
     - path: /api/inventory
       action:
         proxy:
